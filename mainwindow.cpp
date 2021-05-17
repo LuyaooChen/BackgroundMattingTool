@@ -54,12 +54,16 @@ void MainWindow::on_open_pushButton_clicked()
                                             tr("选择图片"),
                                             "C:\\",
                                             tr("图像文件 (*.png *.jpg *.bmp)"));
+    if(srcFileName.isEmpty()) return;
     srcImg=imread(qstr2str(srcFileName));
+    if(srcImg.empty()) return;
     qSrcImg = QImage(srcImg.data,srcImg.cols,srcImg.rows,srcImg.cols * 3, QImage::Format_BGR888);
     ui->src_label->setGeometry(60,20,430,600);
     qSrcImg = qSrcImg.scaled(ui->src_label->size(),Qt::KeepAspectRatio);
     ui->src_label->setPixmap(QPixmap::fromImage(qSrcImg));
     ui->src_label->adjustSize();
+    if(qSrcImg.width()==430) ui->src_label->setGeometry(60, 320-qSrcImg.height()/2, qSrcImg.width(),qSrcImg.height());
+    else if(qSrcImg.height()==600) ui->src_label->setGeometry(275-qSrcImg.width()/2, 20, qSrcImg.width(), qSrcImg.height());
 }
 
 
@@ -81,7 +85,9 @@ void MainWindow::on_openBG_pushButton_clicked()
                                                     tr("选择图片"),
                                                     "C:\\",
                                                     tr("图像文件 (*.png *.jpg *.bmp)"));
+    if(fileName.isEmpty()) return;
     backgroundImg=imread(qstr2str(fileName));
+    if(backgroundImg.empty()) return;
     QImage tmp(backgroundImg.data,
                        backgroundImg.cols,
                        backgroundImg.rows,
@@ -201,6 +207,7 @@ void MainWindow::callImgBlend(const QString &str)
                                                         tr("选择图片"),
                                                         "C:\\",
                                                         tr("图像文件 (*.png *.jpg *.bmp)"));
+        if(fileName.isEmpty()) return;
         new_bg=imread(qstr2str(fileName));
         if(new_bg.empty()) return;
         cv::resize(new_bg, new_bg, Size(srcImg.cols, srcImg.rows));
